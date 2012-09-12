@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+
+        <Button
+            android:id="@+id/btn_rock"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/btn_rock" />
+
+        <Button
+            android:id="@+id/btn_paper"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/btn_paper" />
+
+        <Button
+            android:id="@+id/btn_scissors"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/btn_scissors" />
+
+        <Button
+            android:id="@+id/btn_lizard"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/btn_lizard" />
+
+        <Button
+            android:id="@+id/btn_spock"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/btn_spock" />
+
+
+</LinearLayout>
