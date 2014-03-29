@@ -1,2 +1,4 @@
 Gameplay should be in separate activity
 Option to switch from RPS to RPSLS
+Check if device supports Bluetooth!
+Use maven!
