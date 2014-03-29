@@ -1,22 +1,21 @@
 package com.h2b2.ropascilispock;
 
-import java.util.Locale;
-
-import android.app.Activity;
 import android.app.ActionBar;
+import android.app.Activity;
 import android.app.Fragment;
-import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.support.v13.app.FragmentPagerAdapter;
+import android.content.Context;
 import android.os.Bundle;
+import android.os.CountDownTimer;
+import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity extends Activity implements ActionBar.TabListener {
 
@@ -62,7 +61,15 @@ public class MainActivity extends Activity implements ActionBar.TabListener {
 					}
 				});
 
-		// For each of the sections in the app, add a tab to the action bar.
+		String[] tabs = { "Connect", "Play", "Scoreboard" };
+        for (String tabTitle : tabs) {
+            ActionBar.Tab tab = actionBar.newTab().setText(tabTitle)
+                    .setTabListener(this);
+            actionBar.addTab(tab);
+        }
+        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+        
+		/*// For each of the sections in the app, add a tab to the action bar.
 		for (int i = 0; i < mSectionsPagerAdapter.getCount(); i++) {
 			// Create a tab with text corresponding to the page title defined by
 			// the adapter. Also specify this Activity object, which implements
@@ -71,7 +78,7 @@ public class MainActivity extends Activity implements ActionBar.TabListener {
 			actionBar.addTab(actionBar.newTab()
 					.setText(mSectionsPagerAdapter.getPageTitle(i))
 					.setTabListener(this));
-		}
+		}*/
 	}
 
 	@Override
@@ -111,44 +118,61 @@ public class MainActivity extends Activity implements ActionBar.TabListener {
 	public void onTabReselected(ActionBar.Tab tab,
 			FragmentTransaction fragmentTransaction) {
 	}
+	
+	public void discoverDevices(View view) {
+		Toast.makeText(getApplicationContext(), "Discovering Devices...", Toast.LENGTH_SHORT).show();
+		
+		LayoutInflater vi = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		View v = vi.inflate(R.layout.connect_tab_player_entry, null);
 
-	/**
-	 * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
-	 * one of the sections/tabs/pages.
-	 */
-	public class SectionsPagerAdapter extends FragmentPagerAdapter {
+		// fill in any details dynamically here
+		TextView textViewPlayerName = (TextView) v.findViewById(R.id.textViewPlayerName);
+		textViewPlayerName.setText("Omkar");
+		
+		TextView textViewPlayerConnectStatus = (TextView) v.findViewById(R.id.textViewPlayerConnectStatus);
+		textViewPlayerConnectStatus.setText("Not Paired");
 
-		public SectionsPagerAdapter(FragmentManager fm) {
-			super(fm);
-		}
+		// insert into main view
+		View insertPoint = findViewById(R.id.connectTabEntriesHolder);
+		((ViewGroup) insertPoint).addView(v, 0, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+	}
+	
+	public void resetTimer(View view) {
+		Toast.makeText(getApplicationContext(), "Reset Timer...", Toast.LENGTH_SHORT).show();
+				
+		new CountDownTimer(5000, 100) {
 
-		@Override
-		public Fragment getItem(int position) {
-			// getItem is called to instantiate the fragment for the given page.
-			// Return a PlaceholderFragment (defined as a static inner class
-			// below).
-			return PlaceholderFragment.newInstance(position + 1);
-		}
+		     public void onTick(long millisUntilFinished) {
+		    	 TextView timerText = (TextView) findViewById(R.id.textViewTimer);
+		    	 timerText.setText("" + millisUntilFinished / 1000 + ":" + (millisUntilFinished/100));
+		     }
 
-		@Override
-		public int getCount() {
-			// Show 3 total pages.
-			return 3;
-		}
+		     public void onFinish() {
+		    	 TextView timerText = (TextView) findViewById(R.id.textViewTimer);
+		    	 timerText.setText("Round Done!");
+		     }
+		  }.start();
 
-		@Override
-		public CharSequence getPageTitle(int position) {
-			Locale l = Locale.getDefault();
-			switch (position) {
-			case 0:
-				return getString(R.string.title_section1).toUpperCase(l);
-			case 1:
-				return getString(R.string.title_section2).toUpperCase(l);
-			case 2:
-				return getString(R.string.title_section3).toUpperCase(l);
-			}
-			return null;
-		}
+	}
+
+	public void playRock(View view) {
+		Toast.makeText(getApplicationContext(), "You played ROCK!", Toast.LENGTH_SHORT).show();
+	}
+	
+	public void playPaper(View view) {
+		Toast.makeText(getApplicationContext(), "You played PAPER!", Toast.LENGTH_SHORT).show();
+	}
+	
+	public void playScissors(View view) {
+		Toast.makeText(getApplicationContext(), "You played SCISSORS!", Toast.LENGTH_SHORT).show();
+	}
+	
+	public void playLizard(View view) {
+		Toast.makeText(getApplicationContext(), "You played LIZARD!", Toast.LENGTH_SHORT).show();
+	}
+	
+	public void playSpock(View view) {
+		Toast.makeText(getApplicationContext(), "You played SPOCK!", Toast.LENGTH_SHORT).show();
 	}
 
 	/**
