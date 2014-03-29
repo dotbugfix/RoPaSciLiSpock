@@ -94,7 +94,7 @@ public class MainActivity extends Activity implements ActionBar.TabListener {
 		return super.onOptionsItemSelected(item);
 	}
 
-	@Override
+	//@Override
 	public void onTabSelected(ActionBar.Tab tab,
 			FragmentTransaction fragmentTransaction) {
 		// When the given tab is selected, switch to the corresponding page in
@@ -102,12 +102,12 @@ public class MainActivity extends Activity implements ActionBar.TabListener {
 		mViewPager.setCurrentItem(tab.getPosition());
 	}
 
-	@Override
+	//@Override
 	public void onTabUnselected(ActionBar.Tab tab,
 			FragmentTransaction fragmentTransaction) {
 	}
 
-	@Override
+	//@Override
 	public void onTabReselected(ActionBar.Tab tab,
 			FragmentTransaction fragmentTransaction) {
 	}

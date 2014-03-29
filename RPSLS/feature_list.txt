@@ -1,0 +1,2 @@
+Gameplay should be in separate activity
+Option to switch from RPS to RPSLS
