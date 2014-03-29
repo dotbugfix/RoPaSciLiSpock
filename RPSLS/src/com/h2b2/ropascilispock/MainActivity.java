@@ -59,6 +59,7 @@ public class MainActivity extends Activity implements ActionBar.TabListener {
 					public void onPageSelected(int position) {
 						actionBar.setSelectedNavigationItem(position);
 					}
+					
 				});
 
 		String[] tabs = { "Connect", "Play", "Scoreboard" };
