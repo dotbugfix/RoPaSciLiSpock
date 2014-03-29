@@ -60,6 +60,7 @@ public class MainActivity extends Activity implements ActionBar.TabListener {
 					public void onPageSelected(int position) {
 						actionBar.setSelectedNavigationItem(position);
 					}
+					
 				});
 
 		// For each of the sections in the app, add a tab to the action bar.
