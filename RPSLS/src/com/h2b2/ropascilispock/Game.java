@@ -11,9 +11,11 @@ public class Game {
 	List<Player> cPlayers;
 	Player me;
 	ScoreMasterImpl cScoreMaster;
+	Conn cConnection;
 	
-	Game(Activity activity) {
+	Game(Activity activity, Conn connection) {
 		cActivity = activity;
+		cConnection = connection;
 	}
 	
 	public void playRock() {

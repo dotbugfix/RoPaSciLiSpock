@@ -1,9 +1,12 @@
 package com.h2b2.ropascilispock;
 
+import java.util.Set;
+
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -37,6 +40,11 @@ public class MainActivity extends Activity implements ActionBar.TabListener {
 	 * The Gameplay object
 	 */
 	Game cGame;
+	
+	/**
+	 * The connection object
+	 */
+	Conn cConnection;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -75,8 +83,11 @@ public class MainActivity extends Activity implements ActionBar.TabListener {
         }
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
         
+        /* Create a connection object to be used for device discovery */
+        cConnection = new Conn(this);
+        
         /* Create a single game instance for now */
-        cGame = new Game(this);
+        cGame = new Game(this, cConnection);
         
 		/*// For each of the sections in the app, add a tab to the action bar.
 		for (int i = 0; i < mSectionsPagerAdapter.getCount(); i++) {
@@ -130,6 +141,12 @@ public class MainActivity extends Activity implements ActionBar.TabListener {
 	
 	public void discoverDevices(View view) {
 		Toast.makeText(getApplicationContext(), "Discovering Devices...", Toast.LENGTH_SHORT).show();
+		
+		Set<BluetoothDevice> devices = cConnection.discover();
+		
+		for (BluetoothDevice btDevice:devices) {
+			Toast.makeText(getApplicationContext(), "discover() returned " + btDevice.getName(), Toast.LENGTH_SHORT).show();
+		}
 		
 		LayoutInflater vi = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		View v = vi.inflate(R.layout.connect_tab_player_entry, null);
