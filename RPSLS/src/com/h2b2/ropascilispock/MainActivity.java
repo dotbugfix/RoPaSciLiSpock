@@ -41,6 +41,8 @@ public class MainActivity extends Activity implements ActionBar.TabListener {
 	 */
 	Game cGame;
 	
+	onDeviceFoundListener mOnDeviceFound;
+	
 	/**
 	 * The connection object
 	 */
@@ -74,6 +76,12 @@ public class MainActivity extends Activity implements ActionBar.TabListener {
 					}
 					
 				});
+		
+		mOnDeviceFound=new onDeviceFoundListener(){
+			public void onDeviceFound() {
+				Toast.makeText(getApplicationContext(), "Found", Toast.LENGTH_LONG).show();
+			}		
+		};
 
 		String[] tabs = { "Connect", "Play", "Scoreboard" };
         for (String tabTitle : tabs) {
@@ -84,10 +92,16 @@ public class MainActivity extends Activity implements ActionBar.TabListener {
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
         
         /* Create a connection object to be used for device discovery */
+        
+        
         cConnection = new Conn(this);
+        
+        
         
         /* Create a single game instance for now */
         cGame = new Game(this, cConnection);
+        
+        
         
 		/*// For each of the sections in the app, add a tab to the action bar.
 		for (int i = 0; i < mSectionsPagerAdapter.getCount(); i++) {
@@ -139,7 +153,13 @@ public class MainActivity extends Activity implements ActionBar.TabListener {
 			FragmentTransaction fragmentTransaction) {
 	}
 	
+	
+
+	
 	public void discoverDevices(View view) {
+		
+		
+				
 		Toast.makeText(getApplicationContext(), "Discovering Devices...", Toast.LENGTH_SHORT).show();
 		
 		Set<BluetoothDevice> devices = cConnection.discover();

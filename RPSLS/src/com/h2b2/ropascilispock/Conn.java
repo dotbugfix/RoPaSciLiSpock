@@ -27,6 +27,7 @@ public class Conn {
 				BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
 				// Add the name and address to an array adapter to show in a ListView
 	            cBluetoothDevicesSet.add(device);
+	            cActivity.mOnDeviceFound.onDeviceFound();
 	            Toast.makeText(cActivity.getApplicationContext(),"Found device : " + device.getName(), Toast.LENGTH_SHORT);
 	        }
 	    }
