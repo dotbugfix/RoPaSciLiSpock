@@ -32,6 +32,11 @@ public class MainActivity extends Activity implements ActionBar.TabListener {
 	 * The {@link ViewPager} that will host the section contents.
 	 */
 	ViewPager mViewPager;
+	
+	/**
+	 * The Gameplay object
+	 */
+	Game cGame;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +74,9 @@ public class MainActivity extends Activity implements ActionBar.TabListener {
             actionBar.addTab(tab);
         }
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+        
+        /* Create a single game instance for now */
+        cGame = new Game(this);
         
 		/*// For each of the sections in the app, add a tab to the action bar.
 		for (int i = 0; i < mSectionsPagerAdapter.getCount(); i++) {
@@ -157,23 +165,23 @@ public class MainActivity extends Activity implements ActionBar.TabListener {
 	}
 
 	public void playRock(View view) {
-		Toast.makeText(getApplicationContext(), "You played ROCK!", Toast.LENGTH_SHORT).show();
+		cGame.playRock();
 	}
 	
 	public void playPaper(View view) {
-		Toast.makeText(getApplicationContext(), "You played PAPER!", Toast.LENGTH_SHORT).show();
+		cGame.playPaper();
 	}
 	
 	public void playScissors(View view) {
-		Toast.makeText(getApplicationContext(), "You played SCISSORS!", Toast.LENGTH_SHORT).show();
+		cGame.playScissors();
 	}
 	
 	public void playLizard(View view) {
-		Toast.makeText(getApplicationContext(), "You played LIZARD!", Toast.LENGTH_SHORT).show();
+		cGame.playLizard();
 	}
 	
 	public void playSpock(View view) {
-		Toast.makeText(getApplicationContext(), "You played SPOCK!", Toast.LENGTH_SHORT).show();
+		cGame.playSpock();
 	}
 
 	/**
