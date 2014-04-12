@@ -5,19 +5,29 @@
     android:orientation="vertical" >
 
     <Button
-        android:id="@+id/buttonDiscover"
+        android:id="@+id/buttonStartServer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
         android:layout_margin="5dp"
-        android:text="Discover" 
-        android:onClick="discoverDevices" />
+        android:onClick="buttonListenerHandler"
+        android:text="Start Server" />
 
-    <LinearLayout
-        android:id="@+id/connectTabEntriesHolder"
+    <Button
+        android:id="@+id/buttonJoinServer"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical" >
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_margin="5dp"
+        android:onClick="buttonListenerHandler"
+        android:text="Join Server" />
 
-    </LinearLayout>
+    <TextView
+        android:id="@+id/textViewCurrentStatus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:text="Status:"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
 </LinearLayout>

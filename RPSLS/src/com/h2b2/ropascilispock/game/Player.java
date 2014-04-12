@@ -1,4 +1,4 @@
-package com.h2b2.ropascilispock;
+package com.h2b2.ropascilispock.game;
 
 public class Player {
 	private String cName;

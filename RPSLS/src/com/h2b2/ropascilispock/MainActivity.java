@@ -1,26 +1,36 @@
 package com.h2b2.ropascilispock;
 
-import java.util.Set;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import android.app.ActionBar;
 import android.app.Activity;
-import android.app.Fragment;
 import android.app.FragmentTransaction;
-import android.bluetooth.BluetoothDevice;
-import android.content.Context;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
-import android.widget.Toast;
 
+import com.h2b2.ropascilispock.connectivity.CommServiceImpl;
+import com.h2b2.ropascilispock.connectivity.ICommService;
+import com.h2b2.ropascilispock.game.GameplayImpl;
+import com.h2b2.ropascilispock.game.IGameplay;
+
+/**
+ * Main activity for the application
+ * Creates the TabView, adds tabs and initializes @IGameplay and @ICommService
+ * Also defines a generic event handler for all button clicks in the app; routed to the 
+ * appropriate Fragment
+ */
 public class MainActivity extends Activity implements ActionBar.TabListener {
+
+	/**
+	 * Internal logger instance for this class
+	 */
+	private static final Logger _logger = LoggerFactory
+			.getLogger(MainActivity.class);
 
 	/**
 	 * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -29,90 +39,123 @@ public class MainActivity extends Activity implements ActionBar.TabListener {
 	 * becomes too memory intensive, it may be best to switch to a
 	 * {@link android.support.v13.app.FragmentStatePagerAdapter}.
 	 */
-	SectionsPagerAdapter mSectionsPagerAdapter;
+	SectionsPagerAdapter _sectionsPagerAdapter;
 
 	/**
 	 * The {@link ViewPager} that will host the section contents.
 	 */
 	ViewPager mViewPager;
-	
+
 	/**
 	 * The Gameplay object
 	 */
-	Game cGame;
-	
-	onDeviceFoundListener mOnDeviceFound;
-	
-	/**
-	 * The connection object
-	 */
-	Conn cConnection;
+	IGameplay _gameplay;
+
+	public IGameplay get_gameplay() {
+		return _gameplay;
+	}
+
+	public void set_gameplay(IGameplay _gameplay) {
+		this._gameplay = _gameplay;
+	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		_logger.trace("onCreate() called for MainActivity");
+
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
 		// Set up the action bar.
+		_logger.trace("Setting up the action bar...");
 		final ActionBar actionBar = getActionBar();
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
 		// Create the adapter that will return a fragment for each of the three
 		// primary sections of the activity.
-		mSectionsPagerAdapter = new SectionsPagerAdapter(getFragmentManager());
+		_sectionsPagerAdapter = new SectionsPagerAdapter(getFragmentManager());
 
 		// Set up the ViewPager with the sections adapter.
 		mViewPager = (ViewPager) findViewById(R.id.pager);
-		mViewPager.setAdapter(mSectionsPagerAdapter);
+		mViewPager.setAdapter(_sectionsPagerAdapter);
 
 		// When swiping between different sections, select the corresponding
 		// tab. We can also use ActionBar.Tab#select() to do this if we have
 		// a reference to the Tab.
+		_logger.trace("Setting up the setOnPageChangeListener...");
 		mViewPager
 				.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
 					@Override
 					public void onPageSelected(int position) {
 						actionBar.setSelectedNavigationItem(position);
 					}
-					
-				});
-		
-		mOnDeviceFound=new onDeviceFoundListener(){
-			public void onDeviceFound() {
-				Toast.makeText(getApplicationContext(), "Found", Toast.LENGTH_LONG).show();
-			}		
-		};
 
+				});
+
+		_logger.trace("Setting up tabs...");
 		String[] tabs = { "Connect", "Play", "Scoreboard" };
-        for (String tabTitle : tabs) {
-            ActionBar.Tab tab = actionBar.newTab().setText(tabTitle)
-                    .setTabListener(this);
-            actionBar.addTab(tab);
-        }
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-        
-        /* Create a connection object to be used for device discovery */
-        
-        
-        cConnection = new Conn(this);
-        
-        
-        
-        /* Create a single game instance for now */
-        cGame = new Game(this, cConnection);
-        
-        
-        
-		/*// For each of the sections in the app, add a tab to the action bar.
-		for (int i = 0; i < mSectionsPagerAdapter.getCount(); i++) {
-			// Create a tab with text corresponding to the page title defined by
-			// the adapter. Also specify this Activity object, which implements
-			// the TabListener interface, as the callback (listener) for when
-			// this tab is selected.
-			actionBar.addTab(actionBar.newTab()
-					.setText(mSectionsPagerAdapter.getPageTitle(i))
-					.setTabListener(this));
-		}*/
+		for (String tabTitle : tabs) {
+			ActionBar.Tab tab = actionBar.newTab().setText(tabTitle)
+					.setTabListener(this);
+			actionBar.addTab(tab);
+		}
+		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+
+		_logger.info("GUI Init complete");
+
+		/* Init the Comm Service */
+		_sectionsPagerAdapter.get_connectTabFragment().get_commService()
+				.set_activity(this);
+		_sectionsPagerAdapter.get_connectTabFragment().get_commService()
+				.initialize();
+
+		/* Setup the gameplay */
+		_logger.trace("Setting up the gameplay...");
+		setupGame();
+
+	}
+
+	/**
+	 * Generic action listener for all buttons in the GUI Uses the Degalation
+	 * Pattern to re-route the call to appropriate handlers in other fragments
+	 * 
+	 * @param view
+	 *            Originating View
+	 */
+	public void buttonListenerHandler(View view) {
+		_logger.trace("buttonListenerHandler++ with " + view);
+
+		if (view == findViewById(R.id.buttonStartServer)) {
+			_sectionsPagerAdapter.get_connectTabFragment().startServer(view);
+		} else if (view == findViewById(R.id.buttonJoinServer)) {
+			_sectionsPagerAdapter.get_connectTabFragment().joinServer(view);
+		} else if (view == findViewById(R.id.buttonStartTimer)) {
+			_sectionsPagerAdapter.get_playTabFragment().resetTimer(view);
+		} else if (view == findViewById(R.id.buttonRock)) {
+			_sectionsPagerAdapter.get_playTabFragment().playRock(view);
+		} else if (view == findViewById(R.id.buttonPaper)) {
+			_sectionsPagerAdapter.get_playTabFragment().playPaper(view);
+		} else if (view == findViewById(R.id.buttonScissors)) {
+			_sectionsPagerAdapter.get_playTabFragment().playScissors(view);
+		} else if (view == findViewById(R.id.buttonLizard)) {
+			_sectionsPagerAdapter.get_playTabFragment().playLizard(view);
+		} else if (view == findViewById(R.id.buttonSpock)) {
+			_sectionsPagerAdapter.get_playTabFragment().playSpock(view);
+		}
+
+		_logger.trace("buttonListenerHandler--");
+	}
+
+	/**
+	 * Setup and initialize the Gameplay
+	 */
+	private void setupGame() {
+		/* Create a single game instance for now */
+		_gameplay = new GameplayImpl(this);
+		_logger.info("Single game instance created for MainActivity");
+
+		/* Pass the gameplay instance to the PlayTab fragment */
+		_sectionsPagerAdapter.get_playTabFragment().set_gameplay(_gameplay);
 	}
 
 	@Override
@@ -135,7 +178,7 @@ public class MainActivity extends Activity implements ActionBar.TabListener {
 		return super.onOptionsItemSelected(item);
 	}
 
-	//@Override
+	// @Override
 	public void onTabSelected(ActionBar.Tab tab,
 			FragmentTransaction fragmentTransaction) {
 		// When the given tab is selected, switch to the corresponding page in
@@ -143,119 +186,13 @@ public class MainActivity extends Activity implements ActionBar.TabListener {
 		mViewPager.setCurrentItem(tab.getPosition());
 	}
 
-	//@Override
+	// @Override
 	public void onTabUnselected(ActionBar.Tab tab,
 			FragmentTransaction fragmentTransaction) {
 	}
 
-	//@Override
+	// @Override
 	public void onTabReselected(ActionBar.Tab tab,
 			FragmentTransaction fragmentTransaction) {
 	}
-	
-	
-
-	
-	public void discoverDevices(View view) {
-		
-		
-				
-		Toast.makeText(getApplicationContext(), "Discovering Devices...", Toast.LENGTH_SHORT).show();
-		
-		Set<BluetoothDevice> devices = cConnection.discover();
-		
-		for (BluetoothDevice btDevice:devices) {
-			Toast.makeText(getApplicationContext(), "discover() returned " + btDevice.getName(), Toast.LENGTH_SHORT).show();
-		}
-		
-		LayoutInflater vi = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		View v = vi.inflate(R.layout.connect_tab_player_entry, null);
-
-		// fill in any details dynamically here
-		TextView textViewPlayerName = (TextView) v.findViewById(R.id.textViewPlayerName);
-		textViewPlayerName.setText("Omkar");
-		
-		TextView textViewPlayerConnectStatus = (TextView) v.findViewById(R.id.textViewPlayerConnectStatus);
-		textViewPlayerConnectStatus.setText("Not Paired");
-
-		// insert into main view
-		View insertPoint = findViewById(R.id.connectTabEntriesHolder);
-		((ViewGroup) insertPoint).addView(v, 0, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-	}
-	
-	public void resetTimer(View view) {
-		Toast.makeText(getApplicationContext(), "Reset Timer...", Toast.LENGTH_SHORT).show();
-				
-		new CountDownTimer(5000, 100) {
-
-		     public void onTick(long millisUntilFinished) {
-		    	 TextView timerText = (TextView) findViewById(R.id.textViewTimer);
-		    	 timerText.setText("" + millisUntilFinished / 1000 + ":" + (millisUntilFinished/100));
-		     }
-
-		     public void onFinish() {
-		    	 TextView timerText = (TextView) findViewById(R.id.textViewTimer);
-		    	 timerText.setText("Round Done!");
-		     }
-		  }.start();
-
-	}
-
-	public void playRock(View view) {
-		cGame.playRock();
-	}
-	
-	public void playPaper(View view) {
-		cGame.playPaper();
-	}
-	
-	public void playScissors(View view) {
-		cGame.playScissors();
-	}
-	
-	public void playLizard(View view) {
-		cGame.playLizard();
-	}
-	
-	public void playSpock(View view) {
-		cGame.playSpock();
-	}
-
-	/**
-	 * A placeholder fragment containing a simple view.
-	 */
-	public static class PlaceholderFragment extends Fragment {
-		/**
-		 * The fragment argument representing the section number for this
-		 * fragment.
-		 */
-		private static final String ARG_SECTION_NUMBER = "section_number";
-
-		/**
-		 * Returns a new instance of this fragment for the given section number.
-		 */
-		public static PlaceholderFragment newInstance(int sectionNumber) {
-			PlaceholderFragment fragment = new PlaceholderFragment();
-			Bundle args = new Bundle();
-			args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-			fragment.setArguments(args);
-			return fragment;
-		}
-
-		public PlaceholderFragment() {
-		}
-
-		@Override
-		public View onCreateView(LayoutInflater inflater, ViewGroup container,
-				Bundle savedInstanceState) {
-			View rootView = inflater.inflate(R.layout.fragment_main, container,
-					false);
-			TextView textView = (TextView) rootView
-					.findViewById(R.id.section_label);
-			textView.setText(Integer.toString(getArguments().getInt(
-					ARG_SECTION_NUMBER)));
-			return rootView;
-		}
-	}
-
 }

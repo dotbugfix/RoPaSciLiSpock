@@ -8,8 +8,8 @@
         android:id="@+id/buttonStartTimer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Reset" 
-        android:onClick="resetTimer"/>
+        android:onClick="buttonListenerHandler"
+        android:text="Reset" />
 
     <TextView
         android:id="@+id/textViewTimer"
@@ -33,8 +33,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_margin="10dp"
-            android:text="Rock" 
-            android:onClick="playRock" />
+            android:onClick="buttonListenerHandler"
+            android:text="Rock" />
 
         <Button
             android:id="@+id/buttonPaper"
@@ -42,8 +42,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_margin="10dp"
-            android:text="Paper" 
-            android:onClick="playPaper" />
+            android:onClick="buttonListenerHandler"
+            android:text="Paper" />
 
         <Button
             android:id="@+id/buttonScissors"
@@ -51,8 +51,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_margin="10dp"
-            android:text="Scissors" 
-            android:onClick="playScissors" />
+            android:onClick="buttonListenerHandler"
+            android:text="Scissors" />
 
     </LinearLayout>
 
@@ -69,8 +69,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_margin="10dp"
-            android:text="Lizard" 
-            android:onClick="playLizard" />
+            android:onClick="buttonListenerHandler"
+            android:text="Lizard" />
 
         <Button
             android:id="@+id/buttonSpock"
@@ -78,8 +78,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_margin="10dp"
-            android:text="Spock" 
-            android:onClick="playSpock" />
+            android:onClick="buttonListenerHandler"
+            android:text="Spock" />
 
     </LinearLayout>
 
@@ -88,7 +88,7 @@
         android:layout_height="match_parent" >
 
         <TextView
-            android:id="@+id/textView1"
+            android:id="@+id/textViewCurrentStatus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"

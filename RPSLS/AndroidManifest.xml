@@ -24,6 +24,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+		<activity android:name="com.h2b2.ropascilispock.ServerListActivity" android:label="Pick your server">
+		</activity>
+		
     </application>
 
 </manifest>
