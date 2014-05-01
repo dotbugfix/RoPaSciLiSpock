@@ -99,7 +99,7 @@ public class CommServiceImpl implements ICommService {
 	 * Constructor that saves an instance of the @MainActivity as a member
 	 */
 	public CommServiceImpl(Activity activity) {
-		_logger.trace("Creating an instance of the CommServiceImpl...");
+		_logger.info("Creating an instance of the CommServiceImpl...");
 		/* Save the reference to MainActivity */
 		_activity = activity;		
 	}
@@ -117,7 +117,7 @@ public class CommServiceImpl implements ICommService {
 	 * {@inheritDoc}
 	 */
 	public void startServer(int maxConnections) {
-		_logger.trace("Starting Comm Server...");
+		_logger.info("Starting Comm Server...");
 		try {
 			_connection.startServer(maxConnections, _connectedListener,
 					_maxConnectionsListener, _dataReceivedListener,
@@ -131,7 +131,7 @@ public class CommServiceImpl implements ICommService {
 	 * {@inheritDoc}
 	 */
 	public void connectDevice(String device) throws Exception {
-		_logger.trace("Connecting to device: [{}]", device);
+		_logger.info("Connecting to device: [{}]", device);
 		try {
 			Integer status = _connection.connect(device, _dataReceivedListener, _disconnectedListener);
 			if (status != Connection.SUCCESS) {
@@ -140,7 +140,8 @@ public class CommServiceImpl implements ICommService {
 				_logger.info("Successfully connected to device: [{}]", device);
 			}
 		} catch (Exception ex) {
-			_logger.error("Failed to connect to device [{}]: ", device, ex);
+			_logger.error("Failed to connect to device [{}]", device);
+			_logger.error("EXCEPTION OCCURED", ex);
 			throw ex;
 		}
 	}

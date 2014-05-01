@@ -61,13 +61,13 @@ public class MainActivity extends Activity implements ActionBar.TabListener {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		_logger.trace("onCreate() called for MainActivity");
+		_logger.info("onCreate() called for MainActivity");
 
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
 		// Set up the action bar.
-		_logger.trace("Setting up the action bar...");
+		_logger.info("Setting up the action bar...");
 		final ActionBar actionBar = getActionBar();
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
@@ -82,7 +82,7 @@ public class MainActivity extends Activity implements ActionBar.TabListener {
 		// When swiping between different sections, select the corresponding
 		// tab. We can also use ActionBar.Tab#select() to do this if we have
 		// a reference to the Tab.
-		_logger.trace("Setting up the setOnPageChangeListener...");
+		_logger.info("Setting up the setOnPageChangeListener...");
 		mViewPager
 				.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
 					@Override
@@ -92,7 +92,7 @@ public class MainActivity extends Activity implements ActionBar.TabListener {
 
 				});
 
-		_logger.trace("Setting up tabs...");
+		_logger.info("Setting up tabs...");
 		String[] tabs = { "Connect", "Play", "Scoreboard" };
 		for (String tabTitle : tabs) {
 			ActionBar.Tab tab = actionBar.newTab().setText(tabTitle)
@@ -110,7 +110,7 @@ public class MainActivity extends Activity implements ActionBar.TabListener {
 				.initialize();
 
 		/* Setup the gameplay */
-		_logger.trace("Setting up the gameplay...");
+		_logger.info("Setting up the gameplay...");
 		setupGame();
 
 	}
@@ -123,7 +123,7 @@ public class MainActivity extends Activity implements ActionBar.TabListener {
 	 *            Originating View
 	 */
 	public void buttonListenerHandler(View view) {
-		_logger.trace("buttonListenerHandler++ with " + view);
+		_logger.info("buttonListenerHandler++ with " + view);
 
 		if (view == findViewById(R.id.buttonStartServer)) {
 			_sectionsPagerAdapter.get_connectTabFragment().startServer(view);
@@ -143,7 +143,7 @@ public class MainActivity extends Activity implements ActionBar.TabListener {
 			_sectionsPagerAdapter.get_playTabFragment().playSpock(view);
 		}
 
-		_logger.trace("buttonListenerHandler--");
+		_logger.info("buttonListenerHandler--");
 	}
 
 	/**

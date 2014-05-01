@@ -47,7 +47,7 @@ public class ConnectTabFragment extends Fragment {
 	 * @param view The originating view
 	 */
 	public void startServer(View view) {
-		_logger.trace("Starting server...");
+		_logger.info("Starting server...");
 		/* Tell the Comm service to start the server with max 1 connection */
 		_commService.startServer(1);
 	}
@@ -59,7 +59,7 @@ public class ConnectTabFragment extends Fragment {
 	 * @param view The originating view
 	 */
 	public void joinServer(View view) {
-		_logger.trace("Diaplaying list of available servers...");
+		_logger.info("Diaplaying list of available servers...");
 		Intent serverListIntent = new Intent(getActivity(), ServerListActivity.class);
         startActivityForResult(serverListIntent, ApplicationConstants.SERVER_LIST_RESULT_CODE);
 	}
@@ -70,24 +70,25 @@ public class ConnectTabFragment extends Fragment {
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if ((resultCode == Activity.RESULT_OK) && (requestCode == ApplicationConstants.SERVER_LIST_RESULT_CODE)) {
-            _logger.trace("Received data from the ServerListActivity intent");
+            _logger.info("Received data from the ServerListActivity intent");
         	String device = data.getStringExtra(ServerListActivity.EXTRA_SELECTED_ADDRESS);
             _logger.debug("Intent data: [{}]", device);
             
             /* Tell the Comm service to connect to the selected device */
-            Toast.makeText(getActivity(), "Connecting to device: " + device, 5);
+            Toast.makeText(getActivity(), "Connecting to device: " + device, Toast.LENGTH_SHORT);
             try {
 				_commService.connectDevice(device);
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Toast.makeText(getActivity(), "Could not connect to device: " + device, Toast.LENGTH_SHORT);
+				_logger.error("Failed to connect to selected server", e);
+				return;
 			}
             
             // TODO: If the connection was sucessful, then add this device as a rival to the Gameplay object
-            _logger.trace("Comm service connected to the device, adding it to the gameplay");
+            _logger.info("Comm service connected to the device, adding it to the gameplay");
             
             // TODO: Automatically switch to PLAY tab and start the game!
             return;
-        }
-    }
+		}
+	}
 }
